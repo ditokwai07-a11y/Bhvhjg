@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Portal Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #09090b; color: white; font-family: sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="glass p-6 rounded-2xl mb-8 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-indigo-400">Portal Stream</h1>
+        <nav class="space-x-4">
+            <a href="#" class="hover:text-indigo-400">Início</a>
+            <a href="#" class="hover:text-indigo-400">Explorar</a>
+        </nav>
+    </header>
+
+    <main id="grid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        </main>
+
+    <script>
+        // Simulando um banco de dados (isso pode vir de um arquivo JSON)
+        const conteudos = [
+            { titulo: "Vídeo 01", capa: "https://picsum.photos/400/250?random=1" },
+            { titulo: "Vídeo 02", capa: "https://picsum.photos/400/250?random=2" },
+            { titulo: "Vídeo 03", capa: "https://picsum.photos/400/250?random=3" },
+            { titulo: "Vídeo 04", capa: "https://picsum.photos/400/250?random=4" }
+        ];
+
+        // Automação: O código lê o banco e cria o HTML sozinho
+        const grid = document.getElementById('grid');
+        conteudos.forEach(item => {
+            grid.innerHTML += `
+                <div class="glass p-3 rounded-xl hover:scale-105 transition cursor-pointer">
+                    <img src="${item.capa}" class="rounded-lg mb-2 w-full">
+                    <h2 class="font-semibold">${item.titulo}</h2>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
