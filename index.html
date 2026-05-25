@@ -1,298 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Editor de Vídeo</title>
-  <script crossorigin src="https://unpkg.com/react@19/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@19/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
-    html, body, #root { width: 100%; height: 100%; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Portal Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #09090b; color: white; font-family: sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
 </head>
-<body>
-  <div id="root"></div>
-  <script>
-    const { useState, useRef } = React;
+<body class="p-4 md:p-8">
 
-    function App() {
-      const [video, setVideo] = useState(null);
-      const [isPlaying, setIsPlaying] = useState(false);
-      const [currentTime, setCurrentTime] = useState(0);
-      const [duration, setDuration] = useState(0);
-      const [trimStart, setTrimStart] = useState(0);
-      const [trimEnd, setTrimEnd] = useState(0);
-      const [volume, setVolume] = useState(100);
-      const videoRef = useRef(null);
+    <header class="glass p-6 rounded-2xl mb-8 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-indigo-400">Portal Stream</h1>
+        <nav class="space-x-4">
+            <a href="#" class="hover:text-indigo-400">Início</a>
+            <a href="#" class="hover:text-indigo-400">Explorar</a>
+        </nav>
+    </header>
 
-      const handleVideoUpload = (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        if (!file.type.startsWith('video/')) {
-          alert('Por favor, selecione um arquivo de vídeo válido');
-          return;
-        }
-        const url = URL.createObjectURL(file);
-        setVideo({ file, url, name: file.name });
-        setCurrentTime(0);
-        setTrimStart(0);
-      };
+    <main id="grid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        </main>
 
-      const handleLoadedMetadata = () => {
-        if (videoRef.current) {
-          const dur = videoRef.current.duration;
-          setDuration(dur);
-          setTrimEnd(dur);
-        }
-      };
+    <script>
+        // Simulando um banco de dados (isso pode vir de um arquivo JSON)
+        const conteudos = [
+            { titulo: "Vídeo 01", capa: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='95' fill='white' stroke='black' stroke-width='15'/%3E%3Ccircle cx='100' cy='100' r='75' fill='white' stroke='black' stroke-width='12'/%3E%3Ctext x='100' y='120' font-size='80' font-weight='bold' text-anchor='middle' fill='black'%3E$%3C/text%3E%3C/svg%3E" },
+            { titulo: "Vídeo 02", capa: "https://picsum.photos/400/250?random=2" },
+            { titulo: "Vídeo 03", capa: "https://picsum.photos/400/250?random=3" },
+            { titulo: "Vídeo 04", capa: "https://picsum.photos/400/250?random=4" }
+        ];
 
-      const togglePlayPause = () => {
-        if (videoRef.current) {
-          if (isPlaying) {
-            videoRef.current.pause();
-          } else {
-            videoRef.current.play();
-          }
-          setIsPlaying(!isPlaying);
-        }
-      };
-
-      const handleTimeUpdate = () => {
-        if (videoRef.current) {
-          setCurrentTime(videoRef.current.currentTime);
-        }
-      };
-
-      const handleSeek = (time) => {
-        if (videoRef.current) {
-          videoRef.current.currentTime = time;
-          setCurrentTime(time);
-        }
-      };
-
-      const formatTime = (seconds) => {
-        if (!seconds || isNaN(seconds)) return '0:00';
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-      };
-
-      const handleDownload = () => {
-        if (!video) {
-          alert('Nenhum vídeo carregado');
-          return;
-        }
-        const link = document.createElement('a');
-        link.href = video.url;
-        link.download = `edited-${video.name}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      };
-
-      return React.createElement(
-        'div',
-        { className: 'w-full h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col' },
-        React.createElement(
-          'header',
-          { className: 'bg-slate-800/50 backdrop-blur border-b border-slate-700 px-6 py-4' },
-          React.createElement(
-            'div',
-            { className: 'flex items-center justify-between' },
-            React.createElement(
-              'div',
-              { className: 'flex items-center gap-3' },
-              React.createElement(
-                'div',
-                { className: 'w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center' },
-                '✂️'
-              ),
-              React.createElement('h1', { className: 'text-2xl font-bold' }, 'Editor de Vídeo')
-            ),
-            React.createElement('p', { className: 'text-sm text-slate-400' }, 'Simples • Gratuito • Rápido')
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'flex-1 overflow-hidden flex' },
-          React.createElement(
-            'div',
-            { className: 'flex-1 flex flex-col border-r border-slate-700 p-6 gap-4' },
-            !video
-              ? React.createElement(
-                  'div',
-                  { className: 'flex-1 flex items-center justify-center' },
-                  React.createElement(
-                    'label',
-                    {
-                      className: 'w-full h-full flex items-center justify-center border-2 border-dashed border-slate-600 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-slate-800/30 transition-all group'
-                    },
-                    React.createElement(
-                      'div',
-                      { className: 'text-center' },
-                      React.createElement('div', { className: 'text-5xl mb-4' }, '📹'),
-                      React.createElement('h2', { className: 'text-xl font-semibold mb-2' }, 'Arraste seu vídeo aqui'),
-                      React.createElement('p', { className: 'text-slate-400 mb-4' }, 'ou clique para selecionar'),
-                      React.createElement('p', { className: 'text-sm text-slate-500' }, 'Formatos: MP4, WebM, MOV, AVI')
-                    ),
-                    React.createElement('input', {
-                      type: 'file',
-                      accept: 'video/*',
-                      onChange: handleVideoUpload,
-                      className: 'hidden'
-                    })
-                  )
-                )
-              : React.createElement(
-                  React.Fragment,
-                  null,
-                  React.createElement(
-                    'div',
-                    { className: 'flex-1 bg-black rounded-lg overflow-hidden shadow-2xl' },
-                    React.createElement('video', {
-                      ref: videoRef,
-                      src: video.url,
-                      onLoadedMetadata: handleLoadedMetadata,
-                      onTimeUpdate: handleTimeUpdate,
-                      className: 'w-full h-full object-contain'
-                    })
-                  ),
-                  React.createElement(
-                    'div',
-                    { className: 'flex gap-2' },
-                    React.createElement(
-                      'button',
-                      {
-                        onClick: togglePlayPause,
-                        className: 'flex-1 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors'
-                      },
-                      isPlaying ? '⏸️ Pausar' : '▶️ Reproduzir'
-                    ),
-                    React.createElement(
-                      'button',
-                      {
-                        onClick: handleDownload,
-                        className: 'flex-1 bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors'
-                      },
-                      '⬇️ Baixar'
-                    )
-                  )
-                )
-          ),
-          React.createElement(
-            'div',
-            { className: 'w-80 bg-slate-800/30 border-l border-slate-700 p-6 overflow-y-auto flex flex-col gap-6' },
-            video
-              ? React.createElement(
-                  React.Fragment,
-                  null,
-                  React.createElement(
-                    'div',
-                    null,
-                    React.createElement('h3', { className: 'text-lg font-semibold mb-3' }, 'Controles'),
-                    React.createElement(
-                      'div',
-                      { className: 'space-y-4' },
-                      React.createElement(
-                        'div',
-                        null,
-                        React.createElement(
-                          'label',
-                          { className: 'text-sm text-slate-400 block mb-2' },
-                          `Tempo: ${formatTime(currentTime)} / ${formatTime(duration)}`
-                        ),
-                        React.createElement('input', {
-                          type: 'range',
-                          min: '0',
-                          max: duration,
-                          value: currentTime,
-                          onChange: (e) => handleSeek(parseFloat(e.target.value)),
-                          className: 'w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer'
-                        })
-                      ),
-                      React.createElement(
-                        'div',
-                        null,
-                        React.createElement(
-                          'label',
-                          { className: 'text-sm text-slate-400 block mb-2' },
-                          `Início: ${formatTime(trimStart)}`
-                        ),
-                        React.createElement('input', {
-                          type: 'range',
-                          min: '0',
-                          max: duration,
-                          value: trimStart,
-                          onChange: (e) => setTrimStart(parseFloat(e.target.value)),
-                          className: 'w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer'
-                        })
-                      ),
-                      React.createElement(
-                        'div',
-                        null,
-                        React.createElement(
-                          'label',
-                          { className: 'text-sm text-slate-400 block mb-2' },
-                          `Fim: ${formatTime(trimEnd)}`
-                        ),
-                        React.createElement('input', {
-                          type: 'range',
-                          min: '0',
-                          max: duration,
-                          value: trimEnd,
-                          onChange: (e) => setTrimEnd(parseFloat(e.target.value)),
-                          className: 'w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer'
-                        })
-                      ),
-                      React.createElement(
-                        'div',
-                        null,
-                        React.createElement(
-                          'label',
-                          { className: 'text-sm text-slate-400 block mb-2' },
-                          `🔊 Volume: ${volume}%`
-                        ),
-                        React.createElement('input', {
-                          type: 'range',
-                          min: '0',
-                          max: '100',
-                          value: volume,
-                          onChange: (e) => {
-                            const vol = parseInt(e.target.value);
-                            setVolume(vol);
-                            if (videoRef.current) {
-                              videoRef.current.volume = vol / 100;
-                            }
-                          },
-                          className: 'w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer'
-                        })
-                      )
-                    )
-                  ),
-                  React.createElement(
-                    'div',
-                    { className: 'bg-slate-700/50 rounded-lg p-4' },
-                    React.createElement('h3', { className: 'font-semibold mb-2' }, 'Informações'),
-                    React.createElement(
-                      'div',
-                      { className: 'text-sm text-slate-400 space-y-1' },
-                      React.createElement('p', null, `Arquivo: ${video.name}`),
-                      React.createElement('p', null, `Duração: ${formatTime(duration)}`),
-                      React.createElement('p', null, `Corte: ${formatTime(trimEnd - trimStart)}`)
-                    )
-                  )
-                )
-              : null
-          )
-        )
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(React.createElement(App));
-  </script>
+        // Automação: O código lê o banco e cria o HTML sozinho
+        const grid = document.getElementById('grid');
+        conteudos.forEach(item => {
+            grid.innerHTML += `
+                <div class="glass p-3 rounded-xl hover:scale-105 transition cursor-pointer">
+                    <img src="${item.capa}" class="rounded-lg mb-2 w-full">
+                    <h2 class="font-semibold">${item.titulo}</h2>
+                </div>
+            `;
+        });
+    </script>
 </body>
 </html>
