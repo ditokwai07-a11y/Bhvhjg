@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Space Shooter JS</title>
+    <style>
+        body { margin: 0; background: #000; overflow: hidden; display: flex; justify-content: center; }
+        canvas { border: 2px solid #333; background: #050505; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 600; canvas.height = 400;
+
+        let player = { x: 280, y: 350, w: 40, h: 40 };
+        let bullets = [];
+        let enemies = [];
+        let score = 0;
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowLeft" && player.x > 0) player.x -= 20;
+            if (e.key === "ArrowRight" && player.x < 560) player.x += 20;
+            if (e.key === " ") bullets.push({ x: player.x + 18, y: player.y });
+        });
+
+        function update() {
+            bullets.forEach((b, i) => { b.y -= 5; if (b.y < 0) bullets.splice(i, 1); });
+            if (Math.random() < 0.03) enemies.push({ x: Math.random() * 560, y: 0 });
+            enemies.forEach((en, i) => { 
+                en.y += 2; 
+                if (en.y > 400) enemies.splice(i, 1);
+                bullets.forEach((b, bi) => {
+                    if (b.x > en.x && b.x < en.x + 40 && b.y < en.y + 40) {
+                        enemies.splice(i, 1); bullets.splice(bi, 1); score += 10;
+                    }
+                });
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0f0"; // Player
+            ctx.fillRect(player.x, player.y, player.w, player.h);
+            ctx.fillStyle = "#f00"; // Inimigos
+            enemies.forEach(en => ctx.fillRect(en.x, en.y, 40, 40));
+            ctx.fillStyle = "#fff"; // Balas
+            bullets.forEach(b => ctx.fillRect(b.x, b.y, 5, 10));
+            ctx.fillText("Score: " + score, 10, 20);
+            requestAnimationFrame(() => { update(); draw(); });
+        }
+        draw();
+    </script>
+</body>
+</html>
